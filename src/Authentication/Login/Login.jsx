@@ -1,14 +1,15 @@
 import { useContext } from 'react';
-import { Link, unstable_HistoryRouter } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { AuthContext } from '../../AuthProvider/AuthProvider';
 
 const Login = () => {
 
     const { signIn, signInWithGoogle } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleLogin = event => {
         event.preventDefault();
-        const history = unstable_HistoryRouter();
         const form = event.target;
         const email = form.email.value;
         const password = form.password.value;
@@ -19,7 +20,7 @@ const Login = () => {
                 const loggedUser = result.user;
                 console.log(loggedUser);
                 form.reset();
-                history.push('/');
+                navigate('/');
 
             })
             .catch(error => {
@@ -32,7 +33,7 @@ const Login = () => {
         .then(result => {
             const loggedUser = result.user;
             console.log(loggedUser);
-            history.push('/');
+            navigate('/');
 
         })
         .catch(error => {
