@@ -1,88 +1,84 @@
-import { useState } from 'react';
+import { useContext } from 'react';
+import { Link, unstable_HistoryRouter } from 'react-router-dom';
+import { AuthContext } from '../../AuthProvider/AuthProvider';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
+    const { signIn, signInWithGoogle } = useContext(AuthContext);
 
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
+    const handleLogin = event => {
+        event.preventDefault();
+        const history = unstable_HistoryRouter();
+        const form = event.target;
+        const email = form.email.value;
+        const password = form.password.value;
+        console.log(email, password);
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    // Perform login logic with email and password
-    console.log(email,password)
-  };
+        signIn(email, password)
+            .then(result => {
+                const loggedUser = result.user;
+                console.log(loggedUser);
+                form.reset();
+                history.push('/');
 
-  const handleGoogleLogin = () => {
-    // Perform Google login logic
-  };
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
 
-  const handleRegister = () => {
-    // Navigate to the registration page
-  };
+    const handleGoogleSignIn = () => {
+        signInWithGoogle()
+        .then(result => {
+            const loggedUser = result.user;
+            console.log(loggedUser);
+            history.push('/');
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-    <div className="max-w-md w-full mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Login</h1>
-      <form onSubmit={handleLogin}>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
-            Email:
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={handleEmailChange}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
-            required
-          />
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    return (
+        <div className="hero min-h-screen bg-base-200">
+            <div className="hero-content flex-col">
+                <div className="text-center">
+                    <h1 className="text-5xl font-bold">Please Login !</h1>
+                </div>
+                <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+                    <form onSubmit={handleLogin} className="card-body">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Email</span>
+                            </label>
+                            <input type="email" name='email' placeholder="email" className="input input-bordered" required />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Password</span>
+                            </label>
+                            <input type="password" name='password' placeholder="password" className="input input-bordered" required />
+                            <label className="label">
+                                <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
+                            </label>
+                        </div>
+                        <div className="form-control mt-6">
+                            <button className="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                    <p className='mb-4 ml-8'>
+                        <Link to="/register" className="label-text-alt link link-hover">
+                            New to Auth Master? Please Register
+                        </Link>
+                    </p>
+                    <div>
+                    <button onClick={handleGoogleSignIn} className="btn btn-primary">Google</button>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
-            Password:
-          </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={handlePasswordChange}
-            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
-        >
-          Login
-        </button>
-      </form>
-
-      <button
-        onClick={handleGoogleLogin}
-        className="w-full bg-red-500 text-white font-bold mt-4 py-2 px-4 rounded hover:bg-red-700"
-      >
-        Login with Google
-      </button>
-
-      <p className="text-gray-700 mt-4">
-        Dont have an account?{' '}
-        <a href="#" onClick={handleRegister} className="text-blue-500">
-          Register a new user
-        </a>
-      </p>
-    </div>
-  </div>
-  );
+    );
 };
 
 export default Login;
