@@ -6,6 +6,8 @@ import Home from "../Home/Home/Home";
 import Layout from "../../Layouts/FrontEnd/Layout";
 import Login from "../../Authentication/Login/Login";
 import Register from "../../Authentication/Register/Register";
+import PrivateRoute from "./PrivateRoute";
+import Dashboard from "../Dashboard/Dashboard";
   export const router = createBrowserRouter([
     {
       path: "/",
@@ -14,7 +16,16 @@ import Register from "../../Authentication/Register/Register";
       children:[
         {
             path:'/',
-            element:<Home></Home>
+            element:<Home></Home>,
+            errorElement:"<p>This is from error page</p>",
+        },
+        {
+          path:'/dashboard',
+          element:
+          <PrivateRoute>
+            <Dashboard></Dashboard>
+          </PrivateRoute>,
+          errorElement:"<p>This is from error page</p>",
         },
         {
             path:'/login',
